@@ -2,39 +2,69 @@
 (() => {
   const $ = (sel) => document.querySelector(sel);
 
-  // ============ Header menu ============
+  // ============ Header menu (MOBILE SAFE) ============
   function initHeaderMenu(){
-    const menu = $("#hmenu");
-    const btn  = $("#hmenuBtn");
-    const panel= $("#hmenuPanel");
+    const menu   = $("#hmenu");
+    const btn    = $("#hmenuBtn");
+    const panel  = $("#hmenuPanel");
+    const header = document.querySelector(".header");
     if (!menu || !btn || !panel) return;
 
+    // set CSS var for panel top on mobile
+    function syncMenuTop(){
+      const h = header?.getBoundingClientRect?.().height || 88;
+      document.documentElement.style.setProperty("--menuTop", `${Math.round(h)}px`);
+    }
+
     function open(){
+      syncMenuTop();
       menu.classList.add("is-open");
       btn.setAttribute("aria-expanded","true");
+      document.body.classList.add("menu-open"); // prevents background scroll
     }
+
     function close(){
       menu.classList.remove("is-open");
       btn.setAttribute("aria-expanded","false");
+      document.body.classList.remove("menu-open");
     }
+
     function toggle(){
       menu.classList.contains("is-open") ? close() : open();
     }
 
+    // toggle button
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       toggle();
     });
 
+    // ✅ clicking links closes, but clicking inside panel doesn't bubble
     panel.addEventListener("click", (e) => {
+      e.stopPropagation();
       const a = e.target.closest("a");
       if (a) close();
     });
 
+    // ✅ stop touch events inside panel so iOS doesn't treat it as outside
+    panel.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: true });
+    panel.addEventListener("touchmove",  (e) => e.stopPropagation(), { passive: true });
+
+    // close on outside click
     document.addEventListener("click", () => close());
+
+    // close on escape
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") close();
+    });
+
+    // keep panel top synced on resize/orientation
+    window.addEventListener("resize", () => {
+      if (menu.classList.contains("is-open")) syncMenuTop();
+    });
+    window.addEventListener("orientationchange", () => {
+      if (menu.classList.contains("is-open")) setTimeout(syncMenuTop, 80);
     });
   }
 
@@ -70,9 +100,7 @@
           img.addEventListener("error", () => res(), { once: true });
         });
       }
-      if (img.decode) {
-        return img.decode().catch(() => {});
-      }
+      if (img.decode) return img.decode().catch(() => {});
       return Promise.resolve();
     });
     await Promise.all(tasks);
@@ -84,34 +112,13 @@
     if (!track) return;
 
     // kill previous animation safely
-    if (track._rafId) {
-      cancelAnimationFrame(track._rafId);
-      track._rafId = null;
-    }
-    if (track._onResize) {
-      window.removeEventListener("resize", track._onResize);
-      track._onResize = null;
-    }
-    if (track._onVis) {
-      document.removeEventListener("visibilitychange", track._onVis);
-      track._onVis = null;
-    }
-    if (track._onEnter) {
-      track.removeEventListener("mouseenter", track._onEnter);
-      track._onEnter = null;
-    }
-    if (track._onLeave) {
-      track.removeEventListener("mouseleave", track._onLeave);
-      track._onLeave = null;
-    }
-    if (track._onTouchStart) {
-      track.removeEventListener("touchstart", track._onTouchStart);
-      track._onTouchStart = null;
-    }
-    if (track._onTouchEnd) {
-      track.removeEventListener("touchend", track._onTouchEnd);
-      track._onTouchEnd = null;
-    }
+    if (track._rafId) { cancelAnimationFrame(track._rafId); track._rafId = null; }
+    if (track._onResize) { window.removeEventListener("resize", track._onResize); track._onResize = null; }
+    if (track._onVis) { document.removeEventListener("visibilitychange", track._onVis); track._onVis = null; }
+    if (track._onEnter) { track.removeEventListener("mouseenter", track._onEnter); track._onEnter = null; }
+    if (track._onLeave) { track.removeEventListener("mouseleave", track._onLeave); track._onLeave = null; }
+    if (track._onTouchStart) { track.removeEventListener("touchstart", track._onTouchStart); track._onTouchStart = null; }
+    if (track._onTouchEnd) { track.removeEventListener("touchend", track._onTouchEnd); track._onTouchEnd = null; }
 
     track.innerHTML = "";
 
@@ -121,8 +128,6 @@
     // force marquee internal direction for stable loop in RTL pages
     wrap.style.direction = "ltr";
     track.style.direction = "ltr";
-
-    // prevent horizontal overflow caused by transforms on iOS
     wrap.style.overflow = "hidden";
 
     const buildOneSet = () => {
@@ -164,12 +169,10 @@
       set1.appendChild(buildOneSet());
       track.appendChild(set1);
 
-      // wait for layout + images decode before measuring
       await nextFrame();
       await decodeImages(track);
       await nextFrame();
 
-      // measure set1 width precisely (more stable than scrollWidth)
       singleSetWidth = Math.ceil(set1.getBoundingClientRect().width);
 
       // set 2 (clone)
@@ -184,8 +187,8 @@
     let last = performance.now();
 
     const isMobile = matchMedia("(max-width: 560px)").matches;
-    const SPEED = isMobile ? 85 : 120; // slower on mobile
-    const DIR = -1; // always move left visually
+    const SPEED = isMobile ? 85 : 120;
+    const DIR = -1;
 
     let paused = false;
 
@@ -201,8 +204,7 @@
       if (!paused) {
         x += SPEED * dt;
         if (x >= singleSetWidth) x -= singleSetWidth;
-        const tx = DIR * x;
-        track.style.transform = `translateX(${tx}px)`;
+        track.style.transform = `translateX(${DIR * x}px)`;
       }
 
       track._rafId = requestAnimationFrame(tick);
@@ -215,7 +217,7 @@
       track._rafId = requestAnimationFrame(tick);
     })();
 
-    // pause on hover / touch (mobile UX)
+    // pause on hover / touch
     track._onEnter = () => { paused = true; };
     track._onLeave = () => { paused = false; last = performance.now(); };
     track.addEventListener("mouseenter", track._onEnter);
@@ -318,7 +320,6 @@
       problemImg.alt = cfg?.i18n?.[lang]?.problem_title || "Problem";
     }
 
-    // problem intro (optional) + bullets
     const problemBox = $("#problemBullets");
     if (problemBox) {
       const parent = problemBox.parentElement;
@@ -349,7 +350,6 @@
       whyImg.alt = cfg?.i18n?.[lang]?.why_title || "Why";
     }
 
-    // WHY: bullets like problem
     const whyBox = $("#whyBullets");
     if (whyBox) {
       whyBox.innerHTML = "";
@@ -360,10 +360,7 @@
       });
     }
 
-    // models (RTL safe)
     initModelsMarquee(cfg?.models?.items || []);
-
-    // FAQ
     initFAQ(cfg?.content?.[lang]?.faq || []);
 
     const copy = $("#footerCopy");
