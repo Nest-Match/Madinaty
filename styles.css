@@ -75,15 +75,13 @@ section[id]{
   background: rgba(14,21,39,.66);
   border-bottom: 1px solid rgba(208,179,113,.10);
 }
-
 .header__inner{
-  display:grid;
-  grid-template-columns: auto 1fr auto;
+  display:flex;
   align-items:center;
+  justify-content:space-between;
   gap:14px;
   height:88px;
 }
-
 /* Logo */
 .brand{
   display:flex;
