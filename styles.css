@@ -833,34 +833,60 @@ section[id]{
   .btn, .iconbtn{ transition: none; }
   .btn--gold:hover, .iconbtn:hover{ transform: none; }
 }
-/* ================= MOBILE FOOTER BUTTONS ORDER ================= */
+/* ================= FOOTER: MOBILE SINGLE ROW (FORCE) ================= */
 @media (max-width: 560px){
 
-  .footer__ctaRow{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    width:100%;
+  /* أضمن إن الجزء ده ياخد عرض كامل */
+  .footer__right{ width:100% !important; }
+
+  /* الصف الأساسي */
+  .footer__mobileRow{
+    width:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:12px !important;
+    flex-wrap:nowrap !important;  /* ✅ ممنوع ينزل لسطر تاني */
   }
 
-  /* ===== Arabic (RTL) ===== */
-  html[dir="rtl"] .footer__ctaRow{
-    flex-direction: row-reverse;   /* الزر الأساسي على اليمين */
+  /* زر طلب التقرير */
+  .footer__mobileRow .cta-main{
+    flex: 1 1 auto !important;     /* ياخد المساحة المتاحة */
+    min-width: 0 !important;
+    white-space: nowrap !important;
+    padding: 11px 14px !important;
   }
 
-  /* ===== English (LTR) ===== */
-  html[dir="ltr"] .footer__ctaRow{
-    flex-direction: row;           /* الزر الأساسي على الشمال */
+  /* مجموعة الأيقونات */
+  .footer__miniActions{
+    display:flex !important;
+    gap:10px !important;
+    flex: 0 0 auto !important;
+    align-items:center !important;
+    justify-content:center !important;
+    white-space: nowrap !important;
   }
 
-  /* خلي زر اطلب تقريرك أوضح وأثقل بصريًا */
-  .footer__ctaRow .cta-main{
-    flex-shrink: 0;
+  /* صغر الأيقونات شوية عشان تفضل في سطر واحد */
+  .footer__miniActions .iconbtn{
+    width:36px !important;
+    height:36px !important;
+    border-radius:12px !important;
   }
 
-  /* باقي الأزرار */
-  .footer__ctaRow > :not(.cta-main){
-    opacity: .95;
+  /* ===== ترتيب AR (RTL): الزر يمين والأيقونات شمال ===== */
+  html[dir="rtl"] .footer__mobileRow{
+    flex-direction: row-reverse !important;
+  }
+
+  /* ===== ترتيب EN (LTR): الزر شمال والأيقونات يمين ===== */
+  html[dir="ltr"] .footer__mobileRow{
+    flex-direction: row !important;
+  }
+
+  /* لو لسه في ضيق على موبايلات صغيرة جداً */
+  @media (max-width: 380px){
+    .footer__miniActions .iconbtn{ width:34px !important; height:34px !important; }
+    .footer__mobileRow{ gap:10px !important; }
   }
 }
-
