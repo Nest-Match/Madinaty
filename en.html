@@ -26,7 +26,6 @@
   <meta property="og:url" content="https://nestmatch.github.io/Madinaty/en.html" />
 
   <!-- ✅ OG COVER (Recommended 1200x630 for best preview) -->
-  <!-- ✅ Cache-bust to refresh WhatsApp/Facebook previews -->
   <meta property="og:image" content="https://nestmatch.github.io/Madinaty/assets/og-cover.png?v=2" />
   <meta property="og:image:secure_url" content="https://nestmatch.github.io/Madinaty/assets/og-cover.png?v=2" />
   <meta property="og:image:width" content="1200" />
@@ -100,10 +99,12 @@
       <a class="brand js-top" href="#pageTop" aria-label="Nest Match">
         <img class="brand__logo" src="assets/logo.png" alt="Nest Match" />
       </a>
+
       <!-- Actions on far left -->
       <div class="header__actions">
         <!-- ✅ Switch to Arabic (UPDATED to root) -->
-        <a class="langbtn" id="langToggle" href="./" aria-label="Switch to Arabic" style="display:inline-flex;align-items:center;justify-content:center;text-align:center;line-height:1;">AR</a>
+        <a class="langbtn" id="langToggle" href="./" aria-label="Switch to Arabic"
+           style="display:inline-flex;align-items:center;justify-content:center;text-align:center;line-height:1;">AR</a>
 
         <a class="iconbtn iconbtn--whatsapp" id="waTop" target="_blank" rel="noopener" aria-label="WhatsApp">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -149,9 +150,12 @@
   <!-- HERO -->
   <section class="hero" id="top">
     <div class="hero__bg" id="heroBg"></div>
+
     <div class="container hero__content">
       <div class="hero__text">
-        <h1 class="hero__title">We don’t sell & we don’t take commissions</h1>
+        <!-- ✅ FIXED: keep title stable on mobile -->
+        <h1 class="hero__title">We don’t sell&nbsp;—&nbsp;no commissions</h1>
+
         <p class="hero__subtitle">A financial & architectural evaluation that protects you — and helps you choose confidently</p>
 
         <div class="hero__cta">
@@ -230,22 +234,19 @@
   <footer class="footer" id="contact">
     <div class="container footer__inner">
 
-      <!-- ✅ Right side: CTAs + icons (above) -->
       <div class="footer__right">
-
-        <!-- ✅ Buttons row (same style + same line) -->
+        <!-- ✅ keep as-is now; we will style it properly in styles.css later -->
         <div class="footer__ctaRow" style="display:flex; gap:10px; flex-wrap:wrap;">
           <a class="btn btn--gold" id="ctaFooter" target="_blank" rel="noopener">Request your unit report</a>
 
-          <!-- ✅ Email as button (same style) -->
           <a class="btn btn--gold" id="ctaEmailFooter" href="mailto:smartselect.consult@gmail.com" aria-label="Email Nest Match">
             Email us
           </a>
-        </div>
 
-        <a class="btn btn--gold" id="ctaCallFooter" href="tel:+201271028216" aria-label="Call Nest Match">
-          📞 Call us
-        </a>
+          <a class="btn btn--gold" id="ctaCallFooter" href="tel:+201271028216" aria-label="Call Nest Match">
+            📞 Call us
+          </a>
+        </div>
 
         <div class="footer__icons">
           <a class="iconbtn iconbtn--whatsapp" id="waFooter" target="_blank" rel="noopener" aria-label="WhatsApp">
@@ -264,7 +265,6 @@
         </div>
       </div>
 
-      <!-- ✅ Left side: logo then Note then Copy (Copy LAST) -->
       <div class="footer__left" style="display:flex; flex-direction:column; justify-content:flex-end;">
         <a class="brand brand--footer js-top" href="#pageTop" aria-label="Nest Match" style="order:1;">
           <img class="brand__logo brand__logo--footer" src="assets/logo.png" alt="Nest Match" />
