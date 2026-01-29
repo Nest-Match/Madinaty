@@ -165,7 +165,7 @@
     return await res.json();
   }
 
-  const nextFrame = () => new Promise(r => requestAnimationFrame(() => r()));
+  const nextFrame = () => new Promise(r => requestAnimationFrame(() => r())) ;
 
   async function decodeImages(rootEl){
     const imgs = Array.from(rootEl.querySelectorAll("img"));
@@ -473,9 +473,22 @@
       if (el) el.setAttribute("href", form);
     });
 
-    const report = normalizeUrl(cfg?.links?.reportPdf) || "";
+    // ================== ✅ UPDATED (STRICT): Sample report download from WEBSITE ==================
+    // This prevents site.json from overriding your local PDF download link,
+    // and ensures the button triggers a direct download (not a new tab).
     const rep = $("#ctaReport");
-    if (rep) rep.setAttribute("href", report);
+    if (rep) {
+      const report = normalizeUrl(cfg?.links?.reportPdf) || "/assets/files/sample-report.pdf";
+
+      rep.setAttribute("href", report);
+
+      // Force direct download behavior
+      rep.setAttribute("download", "");
+
+      // Avoid opening in new tab for downloads (especially inside Facebook in-app browser)
+      rep.removeAttribute("target");
+      rep.removeAttribute("rel");
+    }
   }
 
   // i18n injection
